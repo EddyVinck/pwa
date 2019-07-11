@@ -1,3 +1,8 @@
+if (!window.Promise) {
+  // activate the polyfill, but only when the browser does not support Promise
+  window.Promise = Promise;
+}
+
 var deferredPrompt;
 
 if ("serviceWorker" in navigator) {
