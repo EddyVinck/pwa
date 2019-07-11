@@ -1,0 +1,22 @@
+{
+  "name": "pwa",
+  "version": "1.0.0",
+  "description": "a simple Instagram clone",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server"
+  },
+  "keywords": [
+    "pwa",
+    "instagram",
+    "clone",
+    "progressive",
+    "web",
+    "app"
+  ],
+  "author": "Eddy Vinck",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  }
+}
