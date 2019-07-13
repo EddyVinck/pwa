@@ -1,21 +1,21 @@
 {
-  "name": "pwa",
+  "name": "pwa-complete-guide",
   "version": "1.0.0",
-  "description": "a simple Instagram clone",
+  "description": "A complete guide to PWAs. Building a simple Instagram clone.",
   "main": "index.js",
   "scripts": {
-    "start": "http-server"
+    "start": "http-server -c-1"
   },
   "keywords": [
     "pwa",
-    "instagram",
-    "clone",
     "progressive",
     "web",
-    "app"
+    "app",
+    "complete",
+    "tutorial"
   ],
-  "author": "Eddy Vinck",
-  "license": "MIT",
+  "author": "Maximilian Schwarzmüller",
+  "license": "ISC",
   "devDependencies": {
     "http-server": "^0.10.0"
   }
