@@ -7,7 +7,7 @@ self.addEventListener("install", function(event) {
       cache.addAll([
         "/", // 'example.com/' is a different request than 'example.com/index.html', which is why you also need to cache this request. Requests are cached, not paths.
         "/index.html",
-        "/src/js/app.js",
+        "/src /js/app.js",
         "/src/js/feed.js",
         /*
         don't need these, only necessary for browsers that don't support caching anyways. 
@@ -20,7 +20,7 @@ self.addEventListener("install", function(event) {
         "src/css/feed.css",
         // img
         "/src/images/main-image.jpg",
-        // external assets
+        // external assets'
         "https://fonts.googleapis.com/css?family=Roboto:400,700",
         "https://fonts.googleapis.com/icon?family=Material+Icons",
         "https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css"
@@ -42,7 +42,15 @@ self.addEventListener("fetch", function(event) {
         return response;
       } else {
         // if it is _not_ cached, just execute the original request.
-        return fetch(event.request);
+        return fetch(event.request).then(res => {
+          // store whatever comes back from the request
+          return caches.open("my-dynamic-cache").then(cache => {
+            // put is just like add, except it requires that you provide it with the request key value pair. Put does not send a request, it just stores available data
+            cache.put(event.request.url, res.clone()); // cloning is necessary, because a response typically is a one-time-use. If you don't clone the response will be empty, becasuse storing the response in the cache also 'uses' the response.
+            // Put does not make a request
+            return res;
+          });
+        });
       }
     })
     // If there is no matching key, this just returns null. No need to .catch()
