@@ -1,7 +1,11 @@
+const latestStaticCacheName = "my-static-cached-assets-v2";
+const latestDynamicCacheName = "my-dynamic-cache";
+const latestCacheNames = [latestStaticCacheName, latestDynamicCacheName];
+
 self.addEventListener("install", function(event) {
   console.log("[Service Worker] Installing Service Worker ...", event);
   event.waitUntil(
-    caches.open("my-static-cached-assets").then(cache => {
+    caches.open(latestStaticCacheName).then(cache => {
       // add content to the cache
       console.log("[Service Worker] Precaching App Shell", event);
       cache.addAll([
@@ -29,8 +33,25 @@ self.addEventListener("install", function(event) {
   ); // ensures installation is finsished until other operations are executed.
 });
 
+// The activate event is fired when a user has closed all pages and opens the application again. This is a good place to update the cache because the application wasn't running anymore.
 self.addEventListener("activate", function(event) {
   console.log("[Service Worker] Activating Service Worker ....", event);
+
+  // wait until it is finished so fetch events don't use the old cache
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(key => {
+          if (latestCacheNames.includes(key) === false) {
+            // delete the key if it is not one of the latest caches
+            console.log("[Service Worker] Removing old cache", key);
+            return caches.delete(key);
+          }
+        })
+      );
+    })
+  );
+
   return self.clients.claim();
 });
 
@@ -44,7 +65,7 @@ self.addEventListener("fetch", function(event) {
         // if it is _not_ cached, just execute the original request.
         return fetch(event.request).then(res => {
           // store whatever comes back from the request
-          return caches.open("my-dynamic-cache").then(cache => {
+          return caches.open(latestDynamicCacheName).then(cache => {
             // put is just like add, except it requires that you provide it with the request key value pair. Put does not send a request, it just stores available data
             cache.put(event.request.url, res.clone()); // cloning is necessary, because a response typically is a one-time-use. If you don't clone the response will be empty, becasuse storing the response in the cache also 'uses' the response.
             // Put does not make a request
